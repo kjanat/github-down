@@ -1,4 +1,4 @@
-import { checkWithWebView, checkWithWebViewWorker } from '#github-down/lib/downdetector/webview';
+import { checkWithWebView, checkWithWebViewWorker } from '#github-up/lib/downdetector/webview';
 import { describe, expect, test } from 'bun:test';
 
 const chromeArgv = [

@@ -1,14 +1,14 @@
 {
-	"name": "github-down",
-	"version": "0.6.5",
+	"name": "github-up",
+	"version": "0.1.0",
 	"description": "Is GitHub down? Probably...",
-	"homepage": "https://github-down.kjanat.dev/",
+	"homepage": "https://github-up.kjanat.dev/",
 	"bugs": {
-		"url": "https://github.com/kjanat/github-down/issues"
+		"url": "https://github.com/kjanat/github-up/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/kjanat/github-down.git"
+		"url": "git+https://github.com/kjanat/github-up.git"
 	},
 	"license": "MIT",
 	"author": "Kaj Kowalski <info@kajkowalski.nl> (https://github.com/kjanat)",
@@ -23,10 +23,10 @@
 	"type": "module",
 	"jsdelivr": "./dist/browser/browser.js",
 	"imports": {
-		"#github-down": "./src/index.ts",
-		"#github-down/cli": "./src/cli/index.ts",
-		"#github-down/browser": "./src/browser.ts",
-		"#github-down/*": "./src/*.ts",
+		"#github-up": "./src/index.ts",
+		"#github-up/cli": "./src/cli/index.ts",
+		"#github-up/browser": "./src/browser.ts",
+		"#github-up/*": "./src/*.ts",
 		"#demo/*": "./demo/*.ts",
 		"#pkg": "./package.json",
 		"#test/*": "./test/*"
@@ -43,7 +43,7 @@
 		"./package.json": "./package.json"
 	},
 	"bin": {
-		"github-down": "dist/bin/cli.mjs"
+		"github-up": "dist/bin/cli.mjs"
 	},
 	"files": [
 		"dist",

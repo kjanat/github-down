@@ -1,5 +1,5 @@
-import idleFaviconHref from './assets/github-down-grayscale.svg';
-import pollingFaviconHref from './assets/github-down.svg';
+import idleFaviconHref from './assets/github-up-grayscale.svg';
+import pollingFaviconHref from './assets/github-up.svg';
 
 function getElement(id: string): HTMLElement {
 	const element = document.querySelector(`#${id}`);

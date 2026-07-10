@@ -1,4 +1,4 @@
-import type { IncidentImpactValue } from '#github-down/lib/types';
+import type { IncidentImpactValue } from '#github-up/lib/types';
 
 const INDICATOR_RANKS = {
 	none: 0,

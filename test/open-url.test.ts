@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 
-import { defaultBrowserOpenCommand } from '#github-down/lib/open-url';
+import { defaultBrowserOpenCommand } from '#github-up/lib/open-url';
 
-const url = 'https://github-down.kjanat.dev/';
+const url = 'https://github-up.kjanat.dev/';
 
 describe(defaultBrowserOpenCommand.name, () => {
 	test('uses open on macOS', () => {

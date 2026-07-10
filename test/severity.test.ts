@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
-import { componentsImpact, componentStatusImpact, deriveConservativeIndicator, describeIndicator } from '#github-down/lib/severity';
+import { componentsImpact, componentStatusImpact, deriveConservativeIndicator, describeIndicator } from '#github-up/lib/severity';
 
 describe(deriveConservativeIndicator.name, () => {
 	test('promotes an operational page indicator when a component is out', () => {

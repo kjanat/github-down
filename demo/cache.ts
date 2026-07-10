@@ -1,6 +1,6 @@
 import { isRecord } from './util.ts';
 
-const CACHE_KEY = 'github-down:last-summary';
+const CACHE_KEY = 'github-up:last-summary';
 
 interface CachedEntry {
 	intervalMs: number;

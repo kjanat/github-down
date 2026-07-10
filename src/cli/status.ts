@@ -1,10 +1,10 @@
-import { type ComponentKey, componentsNamedInText, nameMatchesComponents, nameMatchesManyComponents } from '#github-down/cli/model';
-import type { Source, StatusRow } from '#github-down/cli/model';
-import { EXIT_CODES } from '#github-down/lib/constants';
-import { checkDownDetector } from '#github-down/lib/downdetector';
-import { checkGitHub } from '#github-down/lib/github';
-import { componentsImpact, deriveConservativeIndicator, describeIndicator, higherImpact } from '#github-down/lib/severity';
-import type { ComponentStatus } from '#github-down/lib/types';
+import { type ComponentKey, componentsNamedInText, nameMatchesComponents, nameMatchesManyComponents } from '#github-up/cli/model';
+import type { Source, StatusRow } from '#github-up/cli/model';
+import { EXIT_CODES } from '#github-up/lib/constants';
+import { checkDownDetector } from '#github-up/lib/downdetector';
+import { checkGitHub } from '#github-up/lib/github';
+import { componentsImpact, deriveConservativeIndicator, describeIndicator, higherImpact } from '#github-up/lib/severity';
+import type { ComponentStatus } from '#github-up/lib/types';
 
 function normalizeComponentStatus(value: string): ComponentStatus {
 	if (

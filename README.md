@@ -1,7 +1,7 @@
-# github-down
+# github-up
 
-[![NPM Version](https://img.shields.io/npm/v/github-down?logo=npm&labelColor=CB3837&color=black)](https://npm.im/github-down)
-[![pkg.pr.new](https://pkg.pr.new/badge/kjanat/github-down)](https://pkg.pr.new/~/kjanat/github-down)
+[![NPM Version](https://img.shields.io/npm/v/github-up?logo=npm&labelColor=CB3837&color=black)](https://npm.im/github-up)
+[![pkg.pr.new](https://pkg.pr.new/badge/kjanat/github-up)](https://pkg.pr.new/~/kjanat/github-up)
 
 is github down (again) (maybe). booga check, you no doomscroll.
 
@@ -14,14 +14,14 @@ GitHub no work? maybe you. maybe GitHub. booga look two places same time:
 
 no install, no terminal. page poll itself, you stare:
 
-[https://github-down.kjanat.dev/][site]
+[https://github-up.kjanat.dev/][site]
 
 or pop it from the cli:
 
 ```bash
-github-down web
+github-up web
 # or
-github-down site
+github-up site
 ```
 
 ## get booga
@@ -29,17 +29,17 @@ github-down site
 run direct, no install:
 
 ```bash
-bunx github-down status
+bunx github-up status
 # or
-npx -y github-down status
+npx -y github-up status
 ```
 
 or keep forever:
 
 ```bash
-bun install -g github-down
+bun install -g github-up
 # or
-npm install -g github-down
+npm install -g github-up
 ```
 
 <details>
@@ -49,7 +49,7 @@ every push + PR get published to [pkg.pr.new]. bot drop the url in the PR. run
 any sha:
 
 ```bash
-bunx https://pkg.pr.new/kjanat/github-down@<sha> status   # or npx / pnpx
+bunx https://pkg.pr.new/kjanat/github-up@<sha> status   # or npx / pnpx
 ```
 
 </details>
@@ -61,7 +61,7 @@ bunx https://pkg.pr.new/kjanat/github-down@<sha> status   # or npx / pnpx
 `status` give indicator, lil description, details from both place.
 
 ```bash
-github-down status
+github-up status
 ```
 
 ### words for robot
@@ -69,7 +69,7 @@ github-down status
 json for scripts and little monitoring guys.
 
 ```bash
-github-down status --json
+github-up status --json
 ```
 
 ### no words, just number
@@ -78,7 +78,7 @@ exit code always tell truth (see [the numbers](#the-numbers)), output or not.
 slap `-q`/`--quiet` in CI when you only care about number.
 
 ```bash
-github-down status -q
+github-up status -q
 ```
 
 ### pick your place
@@ -89,16 +89,16 @@ Cloudflare challenge automated checks.
 
 ```bash
 # subcommand
-github-down github
-github-down downdetector
+github-up github
+github-up downdetector
 
 # flag
-github-down status --source github
-github-down status -s downdetector
+github-up status --source github
+github-up status -s downdetector
 
 # many
-github-down status --source github,downdetector
-github-down status -s github -s downdetector
+github-up status --source github,downdetector
+github-up status -s github -s downdetector
 ```
 
 ### pick your part
@@ -108,11 +108,11 @@ only care about one thing? every GitHub component got shorthand flag.
 
 ```bash
 # is Actions cooked?
-github-down status --actions
+github-up status --actions
 
 # many worry
-github-down status --pr --pages
-github-down github --component git,api
+github-up status --pr --pages
+github-up github --component git,api
 ```
 
 full set: `--actions`, `--api`, `--codespaces`, `--copilot`, `--git`,
@@ -130,7 +130,7 @@ browser-safe door, GitHub Status only (downdetector need real chromium, no work
 in browser).
 
 ```typescript
-import { checkGitHub } from "github-down/browser";
+import { checkGitHub } from "github-up/browser";
 
 const result = await checkGitHub();
 
@@ -177,7 +177,7 @@ bun test      # test
 
 [MIT][LICENSE] © 2026 Kaj Kowalski
 
-[LICENSE]: https://github.com/kjanat/github-down/blob/master/LICENSE
+[LICENSE]: https://github.com/kjanat/github-up/blob/master/LICENSE
 [dreamcli]: https://github.com/kjanat/dreamcli
 [pkg.pr.new]: https://pkg.pr.new
-[site]: https://github-down.kjanat.dev
+[site]: https://github-up.kjanat.dev

@@ -1,7 +1,7 @@
 import { flag, ParseError } from '@kjanat/dreamcli';
 
-import { type ComponentKey, componentKeys, type Source, sources } from '#github-down/cli/model';
-import { CHROME_PATH_ENV, GITHUB_STATUS_BASE } from '#github-down/lib/constants';
+import { type ComponentKey, componentKeys, type Source, sources } from '#github-up/cli/model';
+import { CHROME_PATH_ENV, GITHUB_STATUS_BASE } from '#github-up/lib/constants';
 
 /** Builds a flag parser that splits one comma-separated token into validated
  * enum members, so `--flag a,b` works alongside repeated `--flag a --flag b`.
@@ -59,7 +59,7 @@ const githubStatusBaseFlag = flag
 	.alias('base')
 	.alias('b')
 	.default(new URL(GITHUB_STATUS_BASE))
-	.env('GITHUB_DOWN_GITHUB_STATUS_BASE')
+	.env('GITHUB_UP_GITHUB_STATUS_BASE')
 	.describe('Override GitHub status page base URL');
 
 /** Selects which data sources to query; defaults to all available sources.
@@ -68,8 +68,8 @@ const sourceSelectionFlag = flag
 	.array(flag.custom(parseSourceList))
 	.alias('s')
 	.default([[...sources]])
-	.env('GITHUB_DOWN_SOURCE')
-	.env('GITHUB_DOWN_SOURCES') // plural form for convenience
+	.env('GITHUB_UP_SOURCE')
+	.env('GITHUB_UP_SOURCES') // plural form for convenience
 	.describe('Data source(s) to check');
 
 /** Path to a Chrome/Chromium binary, overriding platform discovery. */

@@ -10,10 +10,10 @@ import {
 	selectedComponents,
 	selectedSources,
 	sourceSelectionFlag,
-} from '#github-down/cli/flags';
-import { type ComponentKey, type Source, sourceLabels } from '#github-down/cli/model';
-import type { StatusRow } from '#github-down/cli/model';
-import { renderPageFooter, renderStatusRow, renderStatusRows } from '#github-down/cli/render';
+} from '#github-up/cli/flags';
+import { type ComponentKey, type Source, sourceLabels } from '#github-up/cli/model';
+import type { StatusRow } from '#github-up/cli/model';
+import { renderPageFooter, renderStatusRow, renderStatusRows } from '#github-up/cli/render';
 import {
 	checkDowndetectorSource,
 	checkGitHubSource,
@@ -21,8 +21,8 @@ import {
 	filterGitHubByComponents,
 	sortRows,
 	summarizeExitCode,
-} from '#github-down/cli/status';
-import { openUrlInDefaultBrowser } from '#github-down/lib/open-url';
+} from '#github-up/cli/status';
+import { openUrlInDefaultBrowser } from '#github-up/lib/open-url';
 import pkg from '#pkg' with { type: 'json' };
 
 /** A source paired with the deferred work that checks it. */

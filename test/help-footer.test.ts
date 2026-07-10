@@ -1,4 +1,4 @@
-import { helpFooter, wantsHelp } from '#github-down/cli/help-footer';
+import { helpFooter, wantsHelp } from '#github-up/cli/help-footer';
 import pkg from '#pkg' with { type: 'json' };
 import { osc8 } from '@kjanat/dreamcli';
 import { describe, expect, test } from 'bun:test';

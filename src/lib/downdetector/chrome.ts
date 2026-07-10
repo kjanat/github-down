@@ -11,7 +11,7 @@ import {
 	MACOS_CHROME_PATHS,
 	WINDOWS_CHROME_ROOT_ENV_VARS,
 	WINDOWS_CHROME_SUFFIX_SEGMENTS,
-} from '#github-down/lib/constants';
+} from '#github-up/lib/constants';
 
 /** Represents a launched headless browser instance. */
 type LaunchedBrowser = {
@@ -157,7 +157,7 @@ async function readDevToolsPort(
 async function launchBrowser(chrome: string): Promise<LaunchBrowserResult> {
 	let userDataDir: string;
 	try {
-		userDataDir = mkdtempSync(join(tmpdir(), 'github-down-'));
+		userDataDir = mkdtempSync(join(tmpdir(), 'github-up-'));
 	} catch (error) {
 		const message = error instanceof Error ? error.message : String(error);
 		return { ok: false, error: `mkdtemp failed: ${message}` };

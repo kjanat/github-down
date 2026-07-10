@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'bun:test';
 import { execPath } from 'node:process';
 
-import { parseComponentList, parseSourceList, selectedComponents, selectedSources } from '#github-down/cli/flags';
-import { nameMatchesComponents, sources } from '#github-down/cli/model';
-import type { ComponentKey, Source, StatusRow } from '#github-down/cli/model';
-import { filterGitHubByComponents, getExitCode, summarizeExitCode } from '#github-down/cli/status';
-import { CHROME_PATH_ENV } from '#github-down/lib/constants';
-import { findChrome } from '#github-down/lib/downdetector/chrome';
+import { parseComponentList, parseSourceList, selectedComponents, selectedSources } from '#github-up/cli/flags';
+import { nameMatchesComponents, sources } from '#github-up/cli/model';
+import type { ComponentKey, Source, StatusRow } from '#github-up/cli/model';
+import { filterGitHubByComponents, getExitCode, summarizeExitCode } from '#github-up/cli/status';
+import { CHROME_PATH_ENV } from '#github-up/lib/constants';
+import { findChrome } from '#github-up/lib/downdetector/chrome';
 
 function githubRow(
 	overrides: Partial<Extract<StatusRow, { source: 'github' }>> = {},
@@ -333,7 +333,7 @@ describe('findChrome override', () => {
 		expect(findChrome('/no/such/chrome-binary')).toBeNull();
 	});
 
-	test('honors the GITHUB_DOWN_CHROME environment variable', () => {
+	test('honors the GITHUB_UP_CHROME environment variable', () => {
 		const previous = process.env[CHROME_PATH_ENV];
 		process.env[CHROME_PATH_ENV] = execPath;
 		try {

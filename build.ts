@@ -74,7 +74,7 @@ const getHerDoneBitch = command('build')
 				...ctx.tsdownBuildDefaults,
 				entry: { cli: 'src/main.ts' },
 				dts: false,
-				// exports: { bin: { 'github-down': './src/main.ts' } },
+				// exports: { bin: { 'github-up': './src/main.ts' } },
 				platform: 'node',
 				outDir: ctx.binOutDir,
 			}),

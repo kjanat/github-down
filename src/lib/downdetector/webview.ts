@@ -1,11 +1,11 @@
-import { CHROME_PATH_ENV } from '#github-down/lib/constants';
+import { CHROME_PATH_ENV } from '#github-up/lib/constants';
 import {
 	detectPossibleProblemsNote,
 	POGO_SNAPSHOT_EXPRESSION,
 	pollPogoSnapshotFromEvaluate,
 	POSSIBLE_PROBLEMS_PATTERN,
-} from '#github-down/lib/downdetector/snapshot';
-import type { Signal } from '#github-down/lib/types';
+} from '#github-up/lib/downdetector/snapshot';
+import type { Signal } from '#github-up/lib/types';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 type WebViewBackend =

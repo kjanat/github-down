@@ -1,7 +1,7 @@
-import { createWebCommand, githubCommand, statusCommand } from '#github-down/cli/commands';
-import { githubDown } from '#github-down/cli/index';
-import { renderStatusRow } from '#github-down/cli/render';
-import { EXIT_CODES } from '#github-down/lib/constants';
+import { createWebCommand, githubCommand, statusCommand } from '#github-up/cli/commands';
+import { githubUp } from '#github-up/cli/index';
+import { renderStatusRow } from '#github-up/cli/render';
+import { EXIT_CODES } from '#github-up/lib/constants';
 import pkg from '#pkg' with { type: 'json' };
 import { githubStatusBaseEnvVar, withSummaryFixture } from '#test/support/statuspage-fixture.ts';
 import { ExitError } from '@kjanat/dreamcli/runtime';
@@ -65,7 +65,7 @@ async function runRootCli(argv: readonly string[]) {
 	const stdout: string[] = [];
 	const stderr: string[] = [];
 	const adapter = createTestAdapter({
-		argv: ['node', '/usr/bin/github-down', ...argv],
+		argv: ['node', '/usr/bin/github-up', ...argv],
 		cwd: '/work/actup-v2',
 		stdout: (line) => {
 			stdout.push(line);
@@ -84,7 +84,7 @@ async function runRootCli(argv: readonly string[]) {
 	});
 
 	try {
-		await githubDown.run({ adapter });
+		await githubUp.run({ adapter });
 	} catch (error: unknown) {
 		if (error instanceof ExitError) {
 			return { exitCode: error.code, stderr, stdout };
@@ -126,12 +126,12 @@ describe('CLI status output', () => {
 
 		expect(result.exitCode).toBe(0);
 		expect(result.stderr).toEqual([]);
-		expect(output.startsWith(`github-down v${pkg.version}\n`)).toBe(true);
-		expect(output).toContain('Usage: github-down [command] [options]');
+		expect(output.startsWith(`github-up v${pkg.version}\n`)).toBe(true);
+		expect(output).toContain('Usage: github-up [command] [options]');
 		expect(output).toContain(
 			'status (default)  Check GitHub status across GitHub and Downdetector',
 		);
-		expect(output).toContain('github-down [flags]');
+		expect(output).toContain('github-up [flags]');
 		expect(output).toContain('web');
 		expect(output).not.toContain('actup');
 		expect(output).not.toContain('0.0.0+dev');
@@ -208,7 +208,7 @@ GitHub
 
 	test('root CLI dispatches explicit status command with down fixture JSON output', async () => {
 		await withSummaryFixture('github-down.json', async (server) => {
-			const result = await githubDown.execute(
+			const result = await githubUp.execute(
 				['status', '--source', 'github'],
 				{
 					env: { [githubStatusBaseEnvVar]: server.baseUrl },
@@ -224,7 +224,7 @@ GitHub
 
 	test('root CLI filters by component shorthand flags', async () => {
 		await withSummaryFixture('github-down.json', async (server) => {
-			const result = await githubDown.execute(
+			const result = await githubUp.execute(
 				['status', '--source', 'github', '--actions'],
 				{
 					env: { [githubStatusBaseEnvVar]: server.baseUrl },

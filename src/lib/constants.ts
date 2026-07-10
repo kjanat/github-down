@@ -1,4 +1,4 @@
-import type { Indicator } from '#github-down/lib/types';
+import type { Indicator } from '#github-up/lib/types';
 
 /** Mapping of status levels to their corresponding exit codes. */
 const EXIT_CODES = {
@@ -16,7 +16,7 @@ const GITHUB_STATUS_BASE = 'https://www.githubstatus.com';
 const DOWNDETECTOR_URL = 'https://downdetector.com/status/github/';
 
 /** Environment variable pointing at a custom Chrome/Chromium binary. */
-const CHROME_PATH_ENV = 'GITHUB_DOWN_CHROME';
+const CHROME_PATH_ENV = 'GITHUB_UP_CHROME';
 
 /** Executable names to probe via `which` when locating a Chromium-family binary (Unix/macOS). */
 const BROWSER_CANDIDATES = [

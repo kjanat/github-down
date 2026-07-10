@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 
-import { checkGitHubSource, summarizeExitCode } from '#github-down/cli/status';
-import { checkGitHub } from '#github-down/lib/github';
+import { checkGitHubSource, summarizeExitCode } from '#github-up/cli/status';
+import { checkGitHub } from '#github-up/lib/github';
 import { cacheControlHeader, withSummaryBody, withSummaryFixture } from '#test/support/statuspage-fixture.ts';
 
 describe('checkGitHub', () => {

@@ -1,5 +1,5 @@
-import type { Component, Incident } from '#github-down/browser';
-import { deriveConservativeIndicator, describeIndicator } from '#github-down/lib/severity';
+import type { Component, Incident } from '#github-up/browser';
+import { deriveConservativeIndicator, describeIndicator } from '#github-up/lib/severity';
 
 import { getString, isRecord } from './util.ts';
 

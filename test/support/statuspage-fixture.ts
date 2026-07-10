@@ -1,6 +1,6 @@
 import { file, serve } from 'bun';
 
-const githubStatusBaseEnvVar = 'GITHUB_DOWN_GITHUB_STATUS_BASE';
+const githubStatusBaseEnvVar = 'GITHUB_UP_GITHUB_STATUS_BASE';
 const cacheControlHeader = 'max-age=3, public, s-maxage=10, stale-while-revalidate=20, stale-if-error=3600';
 
 type SummaryFixtureName = 'github-down.json' | 'github-up.json';

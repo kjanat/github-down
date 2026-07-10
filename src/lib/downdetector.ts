@@ -1,9 +1,9 @@
-import { DOWNDETECTOR_URL } from '#github-down/lib/constants';
-import { openCdpTarget } from '#github-down/lib/downdetector/cdp';
-import { cleanupBrowser, findChrome, launchBrowser } from '#github-down/lib/downdetector/chrome';
-import { detectPossibleProblemsNote, pollPogoSnapshot } from '#github-down/lib/downdetector/snapshot';
-import { checkDownDetectorWithWebView, hasBunWebView } from '#github-down/lib/downdetector/webview';
-import type { Signal } from '#github-down/lib/types';
+import { DOWNDETECTOR_URL } from '#github-up/lib/constants';
+import { openCdpTarget } from '#github-up/lib/downdetector/cdp';
+import { cleanupBrowser, findChrome, launchBrowser } from '#github-up/lib/downdetector/chrome';
+import { detectPossibleProblemsNote, pollPogoSnapshot } from '#github-up/lib/downdetector/snapshot';
+import { checkDownDetectorWithWebView, hasBunWebView } from '#github-up/lib/downdetector/webview';
+import type { Signal } from '#github-up/lib/types';
 
 /** Checks the status of GitHub on Downdetector.
  *
@@ -28,7 +28,7 @@ async function check(chromePath?: string): Promise<Signal> {
 	if (chrome === null) {
 		return {
 			ok: false,
-			error: 'no Chrome/Chromium found; set GITHUB_DOWN_CHROME or pass --chrome <path>',
+			error: 'no Chrome/Chromium found; set GITHUB_UP_CHROME or pass --chrome <path>',
 		};
 	}
 

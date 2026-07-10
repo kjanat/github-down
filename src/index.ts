@@ -1,12 +1,12 @@
-import { EXIT_CODES } from '#github-down/lib/constants';
-import { checkDownDetector } from '#github-down/lib/downdetector';
-import { checkGitHub } from '#github-down/lib/github';
+import { EXIT_CODES } from '#github-up/lib/constants';
+import { checkDownDetector } from '#github-up/lib/downdetector';
+import { checkGitHub } from '#github-up/lib/github';
 
-const githubDown = { checkGitHub, checkDownDetector, EXIT_CODES };
+const githubUp = { checkGitHub, checkDownDetector, EXIT_CODES };
 
-export default githubDown;
+export default githubUp;
 export { checkDownDetector, checkGitHub, EXIT_CODES };
 
-export type { ComponentStatus, IncidentImpactValue, IncidentStatusValue, Indicator, Result, Signal } from '#github-down/lib/types';
+export type { ComponentStatus, IncidentImpactValue, IncidentStatusValue, Indicator, Result, Signal } from '#github-up/lib/types';
 
 export type { Component, Incident, Summary } from 'statuspage.io';

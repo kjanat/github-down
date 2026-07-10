@@ -2,10 +2,10 @@ import type { Out } from '@kjanat/dreamcli';
 import { createColors } from 'ansispeck';
 import type { Colors } from 'ansispeck';
 
-import { sourceLabels } from '#github-down/cli/model';
-import type { StatusOutputRow, StatusRow } from '#github-down/cli/model';
-import { DOWNDETECTOR_URL, GITHUB_STATUS_BASE } from '#github-down/lib/constants';
-import type { IncidentImpactValue } from '#github-down/lib/types';
+import { sourceLabels } from '#github-up/cli/model';
+import type { StatusOutputRow, StatusRow } from '#github-up/cli/model';
+import { DOWNDETECTOR_URL, GITHUB_STATUS_BASE } from '#github-up/lib/constants';
+import type { IncidentImpactValue } from '#github-up/lib/types';
 import pkg from '#pkg' with { type: 'json' };
 
 type ColorFn = (text: string) => string;

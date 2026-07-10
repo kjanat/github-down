@@ -1,4 +1,4 @@
-import { checkGitHub } from '#github-down/browser';
+import { checkGitHub } from '#github-up/browser';
 
 import { writeCache } from './cache.ts';
 import { setPollingIcon } from './dom.ts';

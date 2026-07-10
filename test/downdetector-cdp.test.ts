@@ -1,6 +1,6 @@
-import { DOWNDETECTOR_URL } from '#github-down/lib/constants';
-import { openCdpTarget } from '#github-down/lib/downdetector/cdp';
-import { launchBrowser } from '#github-down/lib/downdetector/chrome';
+import { DOWNDETECTOR_URL } from '#github-up/lib/constants';
+import { openCdpTarget } from '#github-up/lib/downdetector/cdp';
+import { launchBrowser } from '#github-up/lib/downdetector/chrome';
 import { afterEach, describe, expect, test } from 'bun:test';
 
 const originalFetch = globalThis.fetch;
