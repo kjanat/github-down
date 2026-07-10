@@ -1,0 +1,59 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true,
+		"defaultBranch": "master"
+	},
+	"files": {
+		"includes": ["**", "!!**/dist"],
+		"ignoreUnknown": true
+	},
+	"formatter": { "enabled": false },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"complexity": {
+				"preset": "recommended",
+				"useLiteralKeys": "off",
+				"noExcessiveCognitiveComplexity": "warn"
+			},
+			"a11y": { "preset": "none" },
+			"correctness": { "preset": "none" },
+			"security": { "preset": "recommended", "noSecrets": "error" },
+			"performance": { "preset": "none" },
+			"style": { "preset": "none", "useDestructuring": "on" },
+			"nursery": { "preset": "recommended" },
+			"suspicious": { "preset": "none" }
+		},
+		"domains": {
+			"project": "recommended",
+			"test": "recommended",
+			"types": "recommended"
+		}
+	},
+	"javascript": {},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"preset": "recommended",
+				"organizeImports": "off",
+				"useSortedInterfaceMembers": "on"
+			}
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["src/lib/downdetector/**", "src/cli/**", "src/main.ts"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noNodejsModules": "off"
+					}
+				}
+			}
+		}
+	]
+}

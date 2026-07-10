@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="canonical" href="https://github-down.kjanat.dev/">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="robots" content="all, follow, index">
+
+		<title>github-down</title>
+		<meta
+			name="description"
+			content="Live GitHub service status dashboard using github-down"
+		>
+		<meta name="theme-color" content="#e2e8f0">
+
+		<link
+			rel="preload"
+			href="https://www.githubstatus.com/api/v2/summary.json"
+			as="fetch"
+			type="application/json"
+			crossorigin
+		>
+		<link rel="stylesheet" href="style.css">
+		<link
+			id="favicon"
+			rel="icon"
+			href="assets/github-down.svg"
+			type="image/svg+xml"
+			sizes="any"
+		>
+		<script src="main.ts" type="module"></script>
+	</head>
+
+	<body translate="no">
+		<main class="dashboard">
+			<header>
+				<div class="logo">
+					<span id="name">github-down</span>
+				</div>
+				<div id="last-updated" class="status"></div>
+			</header>
+
+			<noscript>
+				<div class="noscript-card">
+					JavaScript is disabled. For terminal status, run
+					<code>npx github-down</code>.
+				</div>
+			</noscript>
+
+			<section class="hero" id="hero">
+				<div class="hero-inner">
+					<div id="hero-icon" class="hero-icon loading"></div>
+					<div>
+						<div id="hero-title" class="hero-title">Checking status…</div>
+						<div id="hero-sub" class="hero-sub"></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="section">
+				<h2>Incidents</h2>
+				<div id="incidents-list" class="incidents-list">
+					<div class="loading-row">Loading…</div>
+				</div>
+			</section>
+
+			<section class="section">
+				<h2>Components</h2>
+				<div id="components-grid" class="components-grid">
+					<div class="loading-row">Loading…</div>
+				</div>
+			</section>
+
+			<footer class="footer" aria-label="Project links">
+				<a
+					class="footer-link footer-link-github"
+					href="https://github.com/kjanat/github-down"
+					aria-label="github-down on GitHub"
+					target="_blank"
+					rel="noreferrer"
+				></a>
+				<a
+					class="footer-link footer-link-npm"
+					href="https://npm.im/github-down"
+					aria-label="github-down on npm"
+					target="_blank"
+					rel="noreferrer"
+				></a>
+			</footer>
+		</main>
+	</body>
+</html>

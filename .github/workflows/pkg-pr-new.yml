@@ -1,0 +1,14 @@
+---
+name: pkg.pr.new
+on: { push: { branches: [master] }, pull_request: null }
+permissions: { contents: read }
+concurrency: { group: "pkg-pr-new-${{ github.event.pull_request.head.sha || github.sha }}", cancel-in-progress: true }
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps: [
+      uses: actions/checkout@v7,
+      uses: kjanat/runner@master,
+      uses: oven-sh/setup-bun@v2,
+      run: runner install --frozen --kill-on-fail build publish:pkg-pr-new,
+    ]
