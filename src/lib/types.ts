@@ -72,4 +72,4 @@ type Result =
 
 export type { ComponentStatus, IncidentImpactValue, IncidentStatusValue, Indicator, Result, Signal };
 
-export type { Summary } from 'statuspage.io';
+export type { Component, Incident, Summary } from 'statuspage.io';

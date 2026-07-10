@@ -9,6 +9,7 @@ import { createTestAdapter, runCommand } from '@kjanat/dreamcli/testkit';
 import { strip } from 'ansispeck';
 import { serve } from 'bun';
 import { describe, expect, test } from 'bun:test';
+import { fileURLToPath } from 'node:url';
 
 function downOutputRow() {
 	return [
@@ -61,6 +62,10 @@ async function withClosedPort<T>(
 	return run(baseUrl);
 }
 
+// Real on-disk manifest path that `.manifest({ from: import.meta.url })`
+// discovery walks up to from `src/cli/index.ts`.
+const realPkgPath = fileURLToPath(new URL('../package.json', import.meta.url));
+
 async function runRootCli(argv: readonly string[]) {
 	const stdout: string[] = [];
 	const stderr: string[] = [];
@@ -74,6 +79,10 @@ async function runRootCli(argv: readonly string[]) {
 			stderr.push(line);
 		},
 		readFile: async (path) => {
+			// The root CLI anchors manifest discovery to its own source file via
+			// `.manifest({ from: import.meta.url })`, so serve the real manifest
+			// there while a decoy sits in the adapter cwd.
+			if (path === realPkgPath) return JSON.stringify(pkg);
 			if (path !== '/work/actup-v2/package.json') return null;
 			return JSON.stringify({
 				name: 'actup',

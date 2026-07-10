@@ -4,7 +4,7 @@ import { EXIT_CODES } from '#github-up/lib/constants';
 import { checkDownDetector } from '#github-up/lib/downdetector';
 import { checkGitHub } from '#github-up/lib/github';
 import { componentsImpact, deriveConservativeIndicator, describeIndicator, higherImpact } from '#github-up/lib/severity';
-import type { ComponentStatus } from '#github-up/lib/types';
+import type { ComponentStatus } from '#github-up/types';
 
 function normalizeComponentStatus(value: string): ComponentStatus {
 	if (

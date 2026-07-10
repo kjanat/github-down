@@ -1,4 +1,4 @@
-import type { Indicator } from '#github-up/lib/types';
+import type { Indicator } from '#github-up/types';
 
 /** Mapping of status levels to their corresponding exit codes. */
 const EXIT_CODES = {

@@ -1,5 +1,6 @@
-import type { CdpSend } from '#github-up/lib/downdetector/cdp';
 import { setTimeout } from 'node:timers/promises';
+
+import type { CdpSend } from '#github-up/lib/downdetector/cdp';
 
 /** Represents the structure of the snapshot taken from the page. */
 type PogoSnapshot = {

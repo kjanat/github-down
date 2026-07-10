@@ -1,42 +1,49 @@
-const API_V2_BASE = '/api/v2';
-
 /** Endpoints for GitHub's status page API. */
 export const StatusAPIEndpoints = {
 	components() {
-		return `${API_V2_BASE}/components.json` as const;
+		return withBase('/components.json');
 	},
 	Incidents: {
 		all() {
-			return `${API_V2_BASE}/incidents.json` as const;
+			return withBase('/incidents.json');
 		},
 		unresolved() {
-			return `${API_V2_BASE}/incidents/unresolved.json` as const;
+			return withBase('/incidents/unresolved.json');
 		},
 	},
 	ScheduledMaintenances: {
 		active() {
-			return `${API_V2_BASE}/scheduled-maintenances/active.json` as const;
+			return withBase('/scheduled-maintenances/active.json');
 		},
 		all() {
-			return `${API_V2_BASE}/scheduled-maintenances.json` as const;
+			return withBase('/scheduled-maintenances.json');
 		},
 		upcoming() {
-			return `${API_V2_BASE}/scheduled-maintenances/upcoming.json` as const;
+			return withBase('/scheduled-maintenances/upcoming.json');
 		},
 	},
 	status() {
-		return `${API_V2_BASE}/status.json` as const;
+		return withBase('/status.json');
 	},
 	/** @private */
 	subscriber(subscriberId: string) {
 		const subId = encodeURIComponent(subscriberId);
-		return `${API_V2_BASE}/subscribers/${subId}.json` as const;
+		return withBase(`/subscribers/${subId}.json`);
 	},
 	/** @private */
 	subscribers() {
-		return `${API_V2_BASE}/subscribers.json` as const;
+		return withBase('/subscribers.json');
 	},
 	summary() {
-		return `${API_V2_BASE}/summary.json` as const;
+		return withBase('/summary.json');
 	},
 };
+
+const withBase = <const Path extends string, const Base extends string = '/api/v2/'>(
+	path: Path,
+	base: Base = '/api/v2/' as Base,
+) => `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}` as WithBase<Base, Path>;
+
+type TrimLeadingSlash<Value extends string> = Value extends `/${infer Rest}` ? TrimLeadingSlash<Rest> : Value;
+type TrimTrailingSlash<Value extends string> = Value extends `${infer Rest}/` ? TrimTrailingSlash<Rest> : Value;
+type WithBase<Base extends string, Path extends string> = `${TrimTrailingSlash<Base>}/${TrimLeadingSlash<Path>}`;

@@ -3,6 +3,5 @@
 	"format": "table-flipped",
 	"profile": "esm-only",
 	"emoji": false,
-	"pack": true,
 	"ignoreRules": []
 }

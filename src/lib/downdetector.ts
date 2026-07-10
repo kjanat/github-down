@@ -3,7 +3,7 @@ import { openCdpTarget } from '#github-up/lib/downdetector/cdp';
 import { cleanupBrowser, findChrome, launchBrowser } from '#github-up/lib/downdetector/chrome';
 import { detectPossibleProblemsNote, pollPogoSnapshot } from '#github-up/lib/downdetector/snapshot';
 import { checkDownDetectorWithWebView, hasBunWebView } from '#github-up/lib/downdetector/webview';
-import type { Signal } from '#github-up/lib/types';
+import type { Signal } from '#github-up/types';
 
 /** Checks the status of GitHub on Downdetector.
  *

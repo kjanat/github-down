@@ -1,4 +1,4 @@
-import type { ComponentStatus, IncidentStatusValue, Indicator } from '#github-up/lib/types';
+import type { ComponentStatus, IncidentStatusValue, Indicator } from '#github-up/types';
 
 const sources = ['github', 'downdetector'] as const;
 

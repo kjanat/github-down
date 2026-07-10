@@ -1,6 +1,6 @@
 import { GITHUB_STATUS_BASE } from '#github-up/lib/constants';
 import { StatusAPIEndpoints } from '#github-up/lib/github/endpoints';
-import type { Result, Summary } from '#github-up/lib/types';
+import type { Result, Summary } from '#github-up/types';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);

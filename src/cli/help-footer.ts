@@ -18,7 +18,9 @@ function wantsHelp(args: readonly string[]): boolean {
  */
 function helpFooter(siteUrl: string, hyperlink = false): string {
 	const link = hyperlink ? osc8(siteUrl, siteUrl) : siteUrl;
-	return `\nNo terminal? Watch the live status page: ${link}\n`;
+	return `
+No terminal? Watch the live status page: ${link}
+`;
 }
 
 export { helpFooter, wantsHelp };

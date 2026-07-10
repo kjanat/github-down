@@ -7,6 +7,5 @@ const githubUp = { checkGitHub, checkDownDetector, EXIT_CODES };
 export default githubUp;
 export { checkDownDetector, checkGitHub, EXIT_CODES };
 
-export type { ComponentStatus, IncidentImpactValue, IncidentStatusValue, Indicator, Result, Signal } from '#github-up/lib/types';
-
-export type { Component, Incident, Summary } from 'statuspage.io';
+export type { ComponentStatus, IncidentImpactValue, IncidentStatusValue, Indicator, Result, Signal } from '#github-up/types';
+export type { Component, Incident, Summary } from '#github-up/types';
