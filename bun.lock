@@ -5,7 +5,7 @@
     "": {
       "name": "github-down",
       "dependencies": {
-        "@kjanat/dreamcli": "^3.0.0-rc.7",
+        "@kjanat/dreamcli": "^3.0.0-rc.8",
         "ansispeck": "^0.1.2",
       },
       "devDependencies": {
@@ -46,7 +46,7 @@
 
     "@ffflorian/api-client": ["@ffflorian/api-client@2.5.1", "", {}, "sha512-tQ1tu123z8wMkAkPGokEtzDtnXm9A7s0GX4wn3VMO+DFN0983W4ipC4HWzhrpzVM58BDdoXXrvrRfsrEzTiOpA=="],
 
-    "@kjanat/dreamcli": ["@kjanat/dreamcli@3.0.0-rc.7", "", { "dependencies": { "ansispeck": "^0.1.2" } }, "sha512-XYig5/0E9z9iUaLEdYK2GUcDdiML8pD0YVcRr9dJmtvCbbesUhEZ+T8PVDtzbhWXjbw458a6wWeaQBBIpCMuHA=="],
+    "@kjanat/dreamcli": ["@kjanat/dreamcli@3.0.0-rc.8", "", { "dependencies": { "ansispeck": "^0.1.2" } }, "sha512-KJzLp90rhMx5sE5jovIMU6jZpoW/NjhcbfFrddVzXIc3u7qWvXeoqqLpkFQwluqHyDaiownoK85Lvj+PA4Yxug=="],
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.1.6", "", { "dependencies": { "@tybys/wasm-util": "^0.10.3" }, "peerDependencies": { "@emnapi/core": "^1.7.1", "@emnapi/runtime": "^1.7.1" } }, "sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg=="],
 

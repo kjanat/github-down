@@ -73,7 +73,7 @@
 		"publish:pkg-pr-new": "bunx pkg-pr-new publish --bun --bin --packageManager=npm,bun,pnpm"
 	},
 	"dependencies": {
-		"@kjanat/dreamcli": "^3.0.0-rc.7",
+		"@kjanat/dreamcli": "^3.0.0-rc.8",
 		"ansispeck": "^0.1.2"
 	},
 	"devDependencies": {
@@ -100,7 +100,7 @@
 		"runtime": [
 			{
 				"name": "bun",
-				"onFail": "warn"
+				"onFail": "ignore"
 			}
 		]
 	},

@@ -1,12 +1,11 @@
 import { flag, ParseError } from '@kjanat/dreamcli';
+import { cyan } from 'ansispeck/safe';
 
 import { type ComponentKey, componentKeys, type Source, sources } from '#github-up/cli/model';
 import { CHROME_PATH_ENV, GITHUB_STATUS_BASE } from '#github-up/lib/constants';
 
-/** Builds a flag parser that splits one comma-separated token into validated
- * enum members, so `--flag a,b` works alongside repeated `--flag a --flag b`.
- * Thrown ParseErrors are surfaced verbatim by dreamcli's flag parser, matching
- * its built-in enum error format. */
+/** Builds a flag parser that splits one comma-separated token into validated enum members, so `--flag a,b` works alongside repeated `--flag a --flag b`.
+ * Thrown ParseErrors are surfaced verbatim by dreamcli's flag parser, matching its built-in enum error format. */
 function csvEnumParser<T extends string>(
 	allowed: readonly T[],
 	flagName: string,
@@ -19,22 +18,10 @@ function csvEnumParser<T extends string>(
 			// `find` yields the typed member (or undefined) without a cast.
 			const match = allowed.find((value) => value === name);
 			if (match === undefined) {
-				throw new ParseError(
-					`Invalid value '${name}' for flag --${flagName}. Allowed: ${
-						allowed.join(
-							', ',
-						)
-					}`,
-					{
-						code: 'INVALID_VALUE',
-						details: {
-							flag: flagName,
-							input: `--${flagName}`,
-							value: name,
-							allowed,
-						},
-					},
-				);
+				throw new ParseError(`Invalid value '${name}' for flag --${flagName}. Allowed: ${allowed.join(', ')}`, {
+					code: 'INVALID_VALUE',
+					details: { flag: flagName, input: `--${flagName}`, value: name, allowed },
+				});
 			}
 			result.push(match);
 		}
@@ -85,19 +72,20 @@ const componentFlag = flag
 	.alias('c')
 	.describe('Only report incidents/components mentioning these component(s)');
 
-/** Per-component convenience flags, e.g. `--actions` is shorthand for
- * `--component actions`. */
+const shortcutForComponent = (component: string) => `Shortcut for ${cyan`--component ${component}`}`;
+
+/** Per-component convenience flags, e.g. `--actions` is shorthand for `--component actions`. */
 const componentConvenienceFlags = {
-	actions: flag.boolean().describe('Shortcut for --component actions'),
-	api: flag.boolean().describe('Shortcut for --component api'),
-	codespaces: flag.boolean().describe('Shortcut for --component codespaces'),
-	copilot: flag.boolean().describe('Shortcut for --component copilot'),
-	git: flag.boolean().describe('Shortcut for --component git'),
-	issues: flag.boolean().alias('issue').describe('Shortcut for --component issues'),
-	packages: flag.boolean().describe('Shortcut for --component packages'),
-	pages: flag.boolean().describe('Shortcut for --component pages'),
-	pr: flag.boolean().alias('prs').describe('Shortcut for --component pr'),
-	webhooks: flag.boolean().describe('Shortcut for --component webhooks'),
+	actions: flag.boolean().describe(shortcutForComponent('actions')),
+	api: flag.boolean().describe(shortcutForComponent('api')),
+	codespaces: flag.boolean().describe(shortcutForComponent('codespaces')),
+	copilot: flag.boolean().describe(shortcutForComponent('copilot')),
+	git: flag.boolean().describe(shortcutForComponent('git')),
+	issues: flag.boolean().alias('issue').describe(shortcutForComponent('issues')),
+	packages: flag.boolean().describe(shortcutForComponent('packages')),
+	pages: flag.boolean().describe(shortcutForComponent('pages')),
+	pr: flag.boolean().alias('prs').describe(shortcutForComponent('pr')),
+	webhooks: flag.boolean().describe(shortcutForComponent('webhooks')),
 } as const satisfies Record<ComponentKey, unknown>;
 
 /** Shape of the flag values used to determine which components were selected.
