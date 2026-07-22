@@ -18,8 +18,13 @@ const getHerDoneBitch = command('build')
 	.description('Build the project.')
 	.flag('watch', flag.boolean().alias('w').env('WATCH'))
 	.flag('log-level', flag.enum(logLevels).alias('logLevel', { hidden: true }).alias('l').default('info'))
-	.flag('out-dir', flag.string().alias('outdir', { hidden: true }).alias('o').default('dist').describe(`directory relative to ${import.meta.file}`))
-	.flag('clean', flag.boolean().alias('c').default(true).describe('clean the output directory before building'))
+	.flag(
+		'out-dir',
+		flag.path({ type: 'directory', mustExist: false }).alias('outdir', { hidden: true }).alias('o').default('dist').describe(
+			`directory relative to ${import.meta.file}`,
+		),
+	)
+	.flag('clean', flag.boolean().negatable().alias('c').default(true).describe('clean the output directory before building'))
 	.derive(async ({ flags }) => {
 		const outdir = path.join(import.meta.dir, flags['out-dir']);
 		const browserOutDir = path.join(outdir, 'browser');
@@ -67,7 +72,10 @@ const getHerDoneBitch = command('build')
 			tsdown.build({
 				...ctx.tsdownBuildDefaults,
 				entry: 'src/index.ts',
-				dts: { entry: ['src/*.ts', '!src/main.ts', '!src/browser.ts'] },
+				dts: {
+					entry: ['src/*.ts', '!src/main.ts', '!src/browser.ts'],
+					tsconfig: 'tsconfig.build.json',
+				},
 				platform: 'node',
 			}),
 			tsdown.build({
@@ -81,7 +89,7 @@ const getHerDoneBitch = command('build')
 			tsdown.build({
 				...ctx.tsdownBuildDefaults,
 				entry: { browser: 'src/browser.ts' },
-				dts: { entry: ['src/browser.ts'] },
+				dts: { entry: ['src/browser.ts'], tsconfig: 'tsconfig.build.json' },
 				// deps: { alwaysBundle: ['statuspage.io'], neverBundle: ['@kjanat/dreamcli'] },
 				platform: 'browser',
 				outDir: ctx.browserOutDir,
@@ -94,6 +102,4 @@ void cli('build')
 	.default(getHerDoneBitch)
 	.manifest({ from: import.meta.url })
 	.links()
-	.run({
-		help: { width: process.stdout.columns },
-	});
+	.run();

@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'bun:test';
 import { execPath } from 'node:process';
 
-import { parseComponentList, parseSourceList, selectedComponents, selectedSources } from '#github-up/cli/flags';
-import { nameMatchesComponents, sources } from '#github-up/cli/model';
-import type { ComponentKey, Source, StatusRow } from '#github-up/cli/model';
+import { selectedComponents } from '#github-up/cli/flags';
+import { nameMatchesComponents } from '#github-up/cli/model';
+import type { ComponentKey, StatusRow } from '#github-up/cli/model';
 import { filterGitHubByComponents, getExitCode, summarizeExitCode } from '#github-up/cli/status';
 import { CHROME_PATH_ENV } from '#github-up/lib/constants';
 import { findChrome } from '#github-up/lib/downdetector/chrome';
@@ -35,7 +35,7 @@ const componentFlags = (
 	selected: readonly ComponentKey[],
 	booleans: Partial<Record<ComponentKey, boolean>> = {},
 ) => ({
-	component: selected.map((key) => [key]),
+	component: selected,
 	actions: false,
 	api: false,
 	codespaces: false,
@@ -62,18 +62,6 @@ describe('selectedComponents', () => {
 
 	test('empty when nothing selected', () => {
 		expect(selectedComponents(componentFlags([])).size).toBe(0);
-	});
-});
-
-describe(parseComponentList.name, () => {
-	test('splits a comma-separated token and trims whitespace', () => {
-		expect(parseComponentList('actions, pr ')).toEqual(['actions', 'pr']);
-	});
-
-	test('throws a clear error for an unknown component', () => {
-		expect(() => parseComponentList('actions,bogus')).toThrow(
-			"Invalid value 'bogus' for flag --component. Allowed: actions, api, codespaces, copilot, git, issues, packages, pages, pr, webhooks",
-		);
 	});
 });
 
@@ -208,46 +196,6 @@ describe(filterGitHubByComponents.name, () => {
 		};
 		expect(filterGitHubByComponents(row, new Set<ComponentKey>(['actions'])))
 			.toBe(row);
-	});
-});
-
-describe(parseSourceList.name, () => {
-	test('splits a comma-separated token', () => {
-		expect(parseSourceList('github,downdetector')).toEqual([
-			'github',
-			'downdetector',
-		]);
-	});
-
-	test('throws a clear error for an unknown source', () => {
-		expect(() => parseSourceList('github,bogus')).toThrow(
-			"Invalid value 'bogus' for flag --source. Allowed: github, downdetector",
-		);
-	});
-});
-
-describe(selectedSources.name, () => {
-	test('supports the all-sources default', () => {
-		expect(selectedSources([[...sources]])).toEqual([
-			'github',
-			'downdetector',
-		]);
-	});
-
-	test('flattens per-occurrence lists', () => {
-		const lists: readonly (readonly Source[])[] = [
-			['github'],
-			['downdetector'],
-		];
-		expect(selectedSources(lists)).toEqual(['github', 'downdetector']);
-	});
-
-	test('dedupes repeated sources so nothing is checked twice', () => {
-		const lists: readonly (readonly Source[])[] = [
-			['github'],
-			['github', 'downdetector'],
-		];
-		expect(selectedSources(lists)).toEqual(['github', 'downdetector']);
 	});
 });
 

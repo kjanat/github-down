@@ -5,7 +5,6 @@ import type { IncidentImpactValue } from '#github-up/types';
 import pkg from '#pkg' with { type: 'json' };
 
 import type { Colors, Out } from '@kjanat/dreamcli';
-import { createColors } from 'ansispeck';
 
 type ColorFn = (text: string) => string;
 
@@ -44,13 +43,10 @@ function formatList(
 	}
 }
 
-function formatRow(row: StatusRow, styled: boolean): string {
-	const c = createColors(styled);
+function formatRow(row: StatusRow, c: Colors, hyperlinks: boolean): string {
 	const color = statusColor(row, c);
-	const header = c.link(
-		urlFor(row),
-		c.underline(c.bold(color(sourceLabels[row.source]))),
-	);
+	const label = c.underline(c.bold(color(sourceLabels[row.source])));
+	const header = hyperlinks ? c.link(urlFor(row), label) : label;
 	const lines: string[] = [header];
 
 	if (row.indicator === 'unavailable') {
@@ -112,12 +108,21 @@ function toOutputRows(rows: readonly StatusRow[]): StatusOutputRow[] {
 }
 
 function renderStatusRows(rows: readonly StatusRow[], out: Out): void {
-	if (out.jsonMode || !out.isTTY) {
+	if (out.jsonMode) {
 		out.json(toOutputRows(rows));
 		return;
 	}
 
-	out.log(rows.map((row) => formatRow(row, out.isTTY)).join('\n\n'));
+	if (!out.isTTY) {
+		out.info(JSON.stringify(toOutputRows(rows)));
+		return;
+	}
+
+	out.info(
+		rows
+			.map((row) => formatRow(row, out.color, out.isHyperlinkSupported))
+			.join('\n\n'),
+	);
 }
 
 /**
@@ -131,7 +136,7 @@ function renderStatusRow(
 	options: RenderStatusRowOptions = {},
 ): void {
 	const prefix = options.leadingBlank === true ? '\n' : '';
-	out.log(`${prefix}${formatRow(row, out.isTTY)}`);
+	out.info(`${prefix}${formatRow(row, out.color, out.isHyperlinkSupported)}`);
 }
 
 /**
@@ -142,9 +147,11 @@ function renderStatusRow(
 function renderPageFooter(out: Out): void {
 	if (out.jsonMode || !out.isTTY) return;
 
-	const c = createColors(true);
-	const link = c.link(pkg.homepage, c.underline(pkg.homepage));
-	out.log(`\n${c.dim(`Watch the live status page: ${link}`)}`);
+	const label = out.color.underline(pkg.homepage);
+	const link = out.isHyperlinkSupported
+		? out.color.link(pkg.homepage, label)
+		: label;
+	out.info(`\n${out.color.dim(`Watch the live status page: ${link}`)}`);
 }
 
 export { renderPageFooter, renderStatusRow, renderStatusRows, toOutputRows };

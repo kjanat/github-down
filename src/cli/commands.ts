@@ -6,9 +6,7 @@ import {
 	componentConvenienceFlags,
 	componentFlag,
 	githubStatusBaseFlag,
-	quietFlag,
 	selectedComponents,
-	selectedSources,
 	sourceSelectionFlag,
 } from '#github-up/cli/flags';
 import { type ComponentKey, type Source, sourceLabels } from '#github-up/cli/model';
@@ -54,20 +52,18 @@ function withComponentFlags(cmd: CommandBuilder) {
 
 /**
  * Drives a set of source checks and renders the result. In an interactive
- * terminal each row is streamed in as it resolves behind a spinner; otherwise
- * the rows are collected and rendered in one batch (JSON, or nothing when
- * quiet). The status-derived exit code is always set.
+ * terminal each row is streamed in as it resolves; otherwise the rows are
+ * collected and rendered in one batch. The status-derived exit code is always
+ * set.
  */
 async function runStatus(
 	tasks: readonly SourceTask[],
 	selected: ReadonlySet<ComponentKey>,
-	quiet: boolean,
 	out: Out,
 ): Promise<void> {
-	// Spinners and per-row streaming only make sense in a real terminal: JSON
-	// must stay a single array on stdout, non-TTY output is machine-bound, and
-	// quiet suppresses decoration entirely.
-	if (out.isTTY && !out.jsonMode && !quiet) {
+	// Per-row streaming only makes sense in a real terminal: JSON must stay a
+	// single array on stdout and non-TTY output is machine-bound.
+	if (out.isTTY && !out.jsonMode) {
 		const rows = await streamStatus(tasks, selected, out);
 		out.setExitCode(summarizeExitCode(rows));
 		return;
@@ -77,10 +73,10 @@ async function runStatus(
 		await Promise.all(tasks.map((task) => task.run())),
 		selected,
 	);
-	finishStatus(rows, quiet, out);
+	finishStatus(rows, out);
 }
 
-/** Spinner label naming the sources still being checked. */
+/** Status label naming the sources being checked. */
 function checkingText(pending: ReadonlySet<Source>): string {
 	return `Checking ${
 		[...pending]
@@ -90,10 +86,7 @@ function checkingText(pending: ReadonlySet<Source>): string {
 }
 
 /**
- * Runs the checks concurrently and prints each result the instant it lands,
- * keeping a spinner alive for whatever is still outstanding. dreamcli allows
- * only one active spinner, so we stop it to clear the line before printing a
- * row and start a fresh one (with the shrunken source list) if work remains.
+ * Runs checks concurrently and prints each result the instant it lands.
  */
 async function streamStatus(
 	tasks: readonly SourceTask[],
@@ -112,30 +105,20 @@ async function streamStatus(
 		),
 	);
 
-	let spinner = out.spinner(checkingText(pending));
+	out.status(checkingText(pending));
 	let renderedRows = 0;
-	try {
-		while (inFlight.size > 0) {
-			const settled = await Promise.race(
-				[...inFlight].map(([index, ready]) => ready.then((value) => ({ index, ...value }))),
-			);
-			inFlight.delete(settled.index);
-			pending.delete(settled.source);
+	while (inFlight.size > 0) {
+		const settled = await Promise.race(
+			[...inFlight].map(([index, ready]) => ready.then((value) => ({ index, ...value }))),
+		);
+		inFlight.delete(settled.index);
+		pending.delete(settled.source);
 
-			const row = filterGitHubByComponents(settled.row, selected);
-			collected.push(row);
+		const row = filterGitHubByComponents(settled.row, selected);
+		collected.push(row);
 
-			spinner.stop();
-			renderStatusRow(row, out, { leadingBlank: renderedRows > 0 });
-			renderedRows += 1;
-			if (pending.size > 0) {
-				spinner = out.spinner(checkingText(pending));
-			}
-		}
-	} catch (error: unknown) {
-		// Restore the cursor/clear the line before the error propagates.
-		spinner.stop();
-		throw error;
+		renderStatusRow(row, out, { leadingBlank: renderedRows > 0 });
+		renderedRows += 1;
 	}
 
 	renderPageFooter(out);
@@ -144,12 +127,9 @@ async function streamStatus(
 
 function finishStatus(
 	rows: readonly StatusRow[],
-	quiet: boolean,
 	out: Out,
 ): void {
-	if (!quiet) {
-		renderStatusRows(sortRows(rows), out);
-	}
+	renderStatusRows(sortRows(rows), out);
 
 	out.setExitCode(summarizeExitCode(rows));
 }
@@ -165,34 +145,32 @@ function applyComponentFilter(
 const statusCommand = withComponentFlags(
 	command('status')
 		.description('Check GitHub status across GitHub and Downdetector')
-		.example('status', 'Check all sources')
-		.example('status --source github', 'Check only GitHub')
-		.example('status --actions', 'Only report trouble mentioning Actions')
-		.example('status --json', 'Emit machine-readable source rows'),
+		.example(({ name }) => `${name} status`, 'Check all sources')
+		.example(({ name }) => `${name} status --source github`, 'Check only GitHub')
+		.example(({ name }) => `${name} status --actions`, 'Only report trouble mentioning Actions')
+		.example(({ name }) => `${name} status --json`, 'Emit machine-readable source rows'),
 )
 	.flag('githubStatusBase', githubStatusBaseFlag)
 	.flag('chrome', chromeFlag)
-	.flag('quiet', quietFlag)
 	.flag('source', sourceSelectionFlag)
 	.action(async ({ flags, out }) => {
-		const { source, githubStatusBase, chrome, quiet } = flags;
-		const tasks = selectedSources(source).map(
+		const { source, githubStatusBase, chrome } = flags;
+		const tasks = source.map(
 			(src): SourceTask => ({
 				source: src,
 				run: () => checkSource(src, githubStatusBase, chrome),
 			}),
 		);
-		await runStatus(tasks, selectedComponents(flags), quiet, out);
+		await runStatus(tasks, selectedComponents(flags), out);
 	});
 
 const githubCommand = withComponentFlags(
 	command('github')
 		.description(`Check only ${sourceLabels.github}`)
-		.example('github', `Check only ${sourceLabels.github}`)
-		.example('github --component actions', 'Only report trouble mentioning Actions'),
+		.example(({ name }) => `${name} github`, `Check only ${sourceLabels.github}`)
+		.example(({ name }) => `${name} github --component actions`, 'Only report trouble mentioning Actions'),
 )
 	.flag('githubStatusBase', githubStatusBaseFlag)
-	.flag('quiet', quietFlag)
 	.action(async ({ flags, out }) => {
 		const tasks: SourceTask[] = [
 			{
@@ -200,14 +178,13 @@ const githubCommand = withComponentFlags(
 				run: () => checkGitHubSource(flags.githubStatusBase),
 			},
 		];
-		await runStatus(tasks, selectedComponents(flags), flags.quiet, out);
+		await runStatus(tasks, selectedComponents(flags), out);
 	});
 
 const downdetectorCommand = command('downdetector')
 	.description(`Check only ${sourceLabels.downdetector}`)
-	.example('downdetector', `Check only ${sourceLabels.downdetector}`)
+	.example(({ name }) => `${name} downdetector`, `Check only ${sourceLabels.downdetector}`)
 	.flag('chrome', chromeFlag)
-	.flag('quiet', quietFlag)
 	.action(async ({ flags, out }) => {
 		const tasks: SourceTask[] = [
 			{
@@ -215,17 +192,17 @@ const downdetectorCommand = command('downdetector')
 				run: () => checkDowndetectorSource(flags.chrome),
 			},
 		];
-		await runStatus(tasks, new Set(), flags.quiet, out);
+		await runStatus(tasks, new Set(), out);
 	});
 
 function createWebCommand(openUrl: UrlOpener = openUrlInDefaultBrowser) {
 	return command('web')
 		.alias('site')
 		.description('Open the live status page')
-		.example('web', 'Open the live status page in your browser')
+		.example(({ name }) => `${name} web`, 'Open the live status page in your browser')
 		.action(async ({ out }) => {
 			await openUrl(pkg.homepage);
-			out.log(`Opening ${pkg.homepage}`);
+			out.status(`Opening ${pkg.homepage}`);
 		});
 }
 

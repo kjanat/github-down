@@ -15,6 +15,7 @@ describe('help footer', () => {
 		expect(wantsHelp([])).toBe(false);
 		expect(wantsHelp(['status'])).toBe(false);
 		expect(wantsHelp(['status', '--quiet'])).toBe(false);
+		expect(wantsHelp(['status', '--', '--help'])).toBe(false);
 	});
 
 	test('footer points at the homepage on its own trailing line', () => {
@@ -30,10 +31,6 @@ describe('help footer', () => {
 
 	test('hyperlink footer wraps the URL in dreamcli osc8', () => {
 		const footer = helpFooter(pkg.homepage, true);
-		expect(footer).toContain(osc8(pkg.homepage, pkg.homepage));
-		// dreamcli terminates the OSC 8 sequence with BEL.
-		expect(footer).toContain(
-			`\x1b]8;;${pkg.homepage}\x07${pkg.homepage}\x1b]8;;\x07`,
-		);
+		expect(footer).toContain(osc8(pkg.homepage));
 	});
 });

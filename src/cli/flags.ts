@@ -1,47 +1,12 @@
-import { flag, ParseError } from '@kjanat/dreamcli';
+import { flag } from '@kjanat/dreamcli';
 import { cyan } from 'ansispeck/safe';
 
-import { type ComponentKey, componentKeys, type Source, sources } from '#github-up/cli/model';
+import { type ComponentKey, componentKeys, sources } from '#github-up/cli/model';
 import { CHROME_PATH_ENV, GITHUB_STATUS_BASE } from '#github-up/lib/constants';
-
-/** Builds a flag parser that splits one comma-separated token into validated enum members, so `--flag a,b` works alongside repeated `--flag a --flag b`.
- * Thrown ParseErrors are surfaced verbatim by dreamcli's flag parser, matching its built-in enum error format. */
-function csvEnumParser<T extends string>(
-	allowed: readonly T[],
-	flagName: string,
-): (raw: unknown) => readonly T[] {
-	return (raw: unknown): readonly T[] => {
-		const result: T[] = [];
-		for (const token of String(raw).split(',')) {
-			const name = token.trim();
-			if (name.length === 0) continue;
-			// `find` yields the typed member (or undefined) without a cast.
-			const match = allowed.find((value) => value === name);
-			if (match === undefined) {
-				throw new ParseError(`Invalid value '${name}' for flag --${flagName}. Allowed: ${allowed.join(', ')}`, {
-					code: 'INVALID_VALUE',
-					details: { flag: flagName, input: `--${flagName}`, value: name, allowed },
-				});
-			}
-			result.push(match);
-		}
-
-		return result;
-	};
-}
-
-/** Parses one `--source` token into the sources it names (comma-separated). */
-const parseSourceList = csvEnumParser(sources, 'source');
-
-/** Parses one `--component` token into the components it names (comma-separated). */
-const parseComponentList = csvEnumParser(componentKeys, 'component');
-
-/** Suppresses all output; the process exit code conveys the status instead. */
-const quietFlag = flag.boolean().alias('q').describe('Silent; exit code only');
 
 /** Overrides the base URL used to reach GitHub's Statuspage API. */
 const githubStatusBaseFlag = flag
-	.custom((raw) => new URL(String(raw)))
+	.url()
 	.alias('github-status-base', { hidden: true })
 	.alias('base')
 	.alias('b')
@@ -52,9 +17,11 @@ const githubStatusBaseFlag = flag
 /** Selects which data sources to query; defaults to all available sources.
  * Accepts comma-separated values and/or repeated flags. */
 const sourceSelectionFlag = flag
-	.array(flag.custom(parseSourceList))
+	.array(flag.enum(sources))
+	.separator(',')
+	.unique()
 	.alias('s')
-	.default([[...sources]])
+	.default([...sources])
 	.env('GITHUB_UP_SOURCE')
 	.env('GITHUB_UP_SOURCES') // plural form for convenience
 	.describe('Data source(s) to check');
@@ -68,7 +35,9 @@ const chromeFlag = flag
 /** Restricts reported incidents/components to those naming the given GitHub
  * component(s). Accepts comma-separated values and/or repeated flags. */
 const componentFlag = flag
-	.array(flag.custom(parseComponentList))
+	.array(flag.enum(componentKeys))
+	.separator(',')
+	.unique()
 	.alias('c')
 	.describe('Only report incidents/components mentioning these component(s)');
 
@@ -88,15 +57,14 @@ const componentConvenienceFlags = {
 	webhooks: flag.boolean().describe(shortcutForComponent('webhooks')),
 } as const satisfies Record<ComponentKey, unknown>;
 
-/** Shape of the flag values used to determine which components were selected.
- * `--component` resolves to one list per occurrence, flattened below. */
+/** Shape of the flag values used to determine which components were selected. */
 type ComponentFlagValues =
-	& { component: readonly (readonly ComponentKey[])[] }
+	& { component: readonly ComponentKey[] }
 	& Record<ComponentKey, boolean>;
 
 /** Unions the `--component` lists with any enabled per-component convenience flags. */
 function selectedComponents(flags: ComponentFlagValues): Set<ComponentKey> {
-	const selected = new Set<ComponentKey>(flags.component.flat());
+	const selected = new Set<ComponentKey>(flags.component);
 	for (const key of componentKeys) {
 		if (flags[key]) selected.add(key);
 	}
@@ -104,23 +72,4 @@ function selectedComponents(flags: ComponentFlagValues): Set<ComponentKey> {
 	return selected;
 }
 
-/** Flattens the per-occurrence `--source` lists into the sources to query,
- * deduplicated so `--source github,github` checks GitHub once. */
-function selectedSources(
-	source: readonly (readonly Source[])[],
-): readonly Source[] {
-	return [...new Set(source.flat())];
-}
-
-export {
-	chromeFlag,
-	componentConvenienceFlags,
-	componentFlag,
-	githubStatusBaseFlag,
-	parseComponentList,
-	parseSourceList,
-	quietFlag,
-	selectedComponents,
-	selectedSources,
-	sourceSelectionFlag,
-};
+export { chromeFlag, componentConvenienceFlags, componentFlag, githubStatusBaseFlag, selectedComponents, sourceSelectionFlag };

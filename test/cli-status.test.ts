@@ -4,6 +4,7 @@ import { renderStatusRow } from '#github-up/cli/render';
 import { EXIT_CODES } from '#github-up/lib/constants';
 import pkg from '#pkg' with { type: 'json' };
 import { githubStatusBaseEnvVar, withSummaryFixture } from '#test/support/statuspage-fixture.ts';
+import { createOutput } from '@kjanat/dreamcli';
 import { ExitError } from '@kjanat/dreamcli/runtime';
 import { createTestAdapter, runCommand } from '@kjanat/dreamcli/testkit';
 import { strip } from 'ansispeck';
@@ -107,11 +108,12 @@ async function runRootCli(argv: readonly string[]) {
 describe('CLI status output', () => {
 	test('can render a streamed row with a leading blank line', () => {
 		const stdout: string[] = [];
-		const out = {
+		const out = createOutput({
+			color: true,
+			hyperlinks: false,
 			isTTY: false,
-			jsonMode: false,
-			log: (line: string) => stdout.push(line),
-		} as unknown as Parameters<typeof renderStatusRow>[1];
+			stdout: (line) => stdout.push(line),
+		});
 
 		renderStatusRow(
 			{
@@ -124,9 +126,12 @@ describe('CLI status output', () => {
 			{ leadingBlank: true },
 		);
 
-		expect(stdout).toEqual([
-			'\nDowndetector\n  User reports show problems with GitHub',
-		]);
+		const output = stdout[0] ?? '';
+		expect(output).toMatch(ESCAPE);
+		expect(output).not.toContain('\x1b]8;;');
+		expect(strip(output)).toBe(
+			'\nDowndetector\n  User reports show problems with GitHub\n',
+		);
 	});
 
 	test('root help ignores cwd package metadata', async () => {
@@ -141,6 +146,7 @@ describe('CLI status output', () => {
 			'status (default)  Check GitHub status across GitHub and Downdetector',
 		);
 		expect(output).toContain('github-up [flags]');
+		expect(output).toContain('github-up status --source github');
 		expect(output).toContain('web');
 		expect(output).not.toContain('actup');
 		expect(output).not.toContain('0.0.0+dev');
@@ -163,8 +169,8 @@ describe('CLI status output', () => {
 		const result = await runCommand(command, []);
 
 		expect(result.exitCode).toBe(0);
-		expect(result.stderr).toEqual([]);
-		expect(result.stdout).toEqual([`Opening ${pkg.homepage}\n`]);
+		expect(result.stderr).toEqual([`Opening ${pkg.homepage}\n`]);
+		expect(result.stdout).toEqual([]);
 		expect(opened).toEqual([pkg.homepage]);
 	});
 
@@ -180,10 +186,10 @@ describe('CLI status output', () => {
 			});
 
 			expect(result.exitCode).toBe(EXIT_CODES.major);
-			expect(result.stderr).toEqual([]);
+			expect(result.stderr).toEqual(['Checking GitHub…\n']);
 			expect(result.stdout).toHaveLength(2);
-			const [body, footer] = result.stdout as [string, string];
-			expect(body).toMatch(ESCAPE);
+			const body = result.stdout[0] ?? '';
+			const footer = result.stdout[1] ?? '';
 			expect(strip(body)).toBe(`\
 GitHub
   Partial System Outage
@@ -205,20 +211,20 @@ GitHub
 			});
 
 			expect(result.exitCode).toBe(0);
-			expect(result.stderr).toEqual([]);
+			expect(result.stderr).toEqual(['Checking GitHub…\n']);
 			expect(result.stdout).toHaveLength(2);
-			const [body, footer] = result.stdout as [string, string];
-			expect(body).toMatch(ESCAPE);
+			const body = result.stdout[0] ?? '';
+			const footer = result.stdout[1] ?? '';
 			expect(strip(body)).toBe('GitHub\n  All Systems Operational\n');
 			expect(strip(footer)).toBe(PAGE_FOOTER_PLAIN);
 			expect(server.requests).toEqual(['/api/v2/summary.json']);
 		});
 	});
 
-	test('root CLI dispatches explicit status command with down fixture JSON output', async () => {
+	test('root CLI splits and deduplicates comma-separated sources', async () => {
 		await withSummaryFixture('github-down.json', async (server) => {
 			const result = await githubUp.execute(
-				['status', '--source', 'github'],
+				['status', '--source', 'github,github'],
 				{
 					env: { [githubStatusBaseEnvVar]: server.baseUrl },
 				},
@@ -304,16 +310,16 @@ GitHub
 			});
 
 			expect(result.exitCode).toBe(EXIT_CODES.unavailable);
-			expect(result.stderr).toEqual([]);
+			expect(result.stderr).toEqual(['Checking GitHub…\n']);
 			expect(result.stdout).toHaveLength(2);
-			const [body, footer] = result.stdout as [string, string];
-			expect(body).toMatch(ESCAPE);
+			const body = result.stdout[0] ?? '';
+			const footer = result.stdout[1] ?? '';
 			expect(strip(body)).toMatch(/^GitHub\n {2}Unavailable: /);
 			expect(strip(footer)).toBe(PAGE_FOOTER_PLAIN);
 		});
 	});
 
-	test('streams a spinner and the row in interactive (TTY) mode', async () => {
+	test('streams the row with suppressible status in interactive mode', async () => {
 		await withSummaryFixture('github-up.json', async (server) => {
 			const result = await runCommand(
 				statusCommand,
@@ -325,20 +331,15 @@ GitHub
 			);
 
 			expect(result.exitCode).toBe(0);
-			expect(result.stderr).toEqual([]);
+			expect(result.stderr).toEqual(['Checking GitHub…\n']);
 			// The result row streams to stdout as styled human output, with a
 			// trailing pointer to the web page.
 			expect(result.stdout).toHaveLength(2);
-			const [body, footer] = result.stdout as [string, string];
-			expect(body).toMatch(ESCAPE);
+			const body = result.stdout[0] ?? '';
+			const footer = result.stdout[1] ?? '';
 			expect(strip(body)).toBe('GitHub\n  All Systems Operational\n');
 			expect(strip(footer)).toBe(PAGE_FOOTER_PLAIN);
-			// A spinner brackets the check: started naming the source, stopped
-			// once the row is ready to print.
-			expect(result.activity).toEqual([
-				{ type: 'spinner:start', text: 'Checking GitHub…' },
-				{ type: 'spinner:stop' },
-			]);
+			expect(result.activity).toEqual([]);
 		});
 	});
 
@@ -375,6 +376,7 @@ GitHub
 
 			expect(result.exitCode).toBe(0);
 			expect(result.activity).toEqual([]);
+			expect(result.stderr).toEqual([]);
 			expect(result.stdout).toEqual([]);
 		});
 	});

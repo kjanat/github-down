@@ -4,7 +4,7 @@ import pkg from '#pkg' with { type: 'json' };
 import type { CLIBuilder } from '@kjanat/dreamcli';
 import { cli, packageRepositoryUrl } from '@kjanat/dreamcli';
 
-const repoUrl: string = packageRepositoryUrl({ repository: pkg.repository })!;
+const repoUrl = packageRepositoryUrl(pkg, { require: true });
 
 const githubUp: CLIBuilder = cli(pkg.name)
 	.manifest(pkg)
